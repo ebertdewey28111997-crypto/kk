@@ -14,6 +14,7 @@
       --accent:    #7c6ef2;
       --accent2:   #ff8fab;
       --accent3:   #06b6d4;
+    --accent4:   #f59e0b;
       --bubble-ai: #ffffff;
       --bubble-user: #7c6ef2;
       --text:      #2d2d2d;
@@ -100,6 +101,7 @@
     .home-card:active { transform: scale(.97); }
     .home-card.kuakua:active { border-color: #c4b5fd; }
     .home-card.voice:active  { border-color: #67e8f9; }
+    .home-card.fortune:active{ border-color: #fcd34d; }
 
     .home-card-icon {
       width: 62px; height: 62px;
@@ -110,6 +112,7 @@
     }
     .kuakua .home-card-icon { background: linear-gradient(135deg, #7c6ef2, #ff8fab); }
     .voice  .home-card-icon { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
+    .fortune.home-card-icon, .fortune .home-card-icon { background: linear-gradient(135deg, #f59e0b, #ef4444); }
 
     .home-card-body { flex: 1; min-width: 0; }
     .home-card-body h2 {
@@ -118,6 +121,7 @@
     }
     .kuakua .home-card-body h2 { color: var(--accent); }
     .voice  .home-card-body h2 { color: var(--accent3); }
+    .fortune.home-card-body h2, .fortune .home-card-body h2 { color: #d97706; }
 
     .home-card-body p {
       font-size: 12px; color: var(--subtext);
@@ -135,6 +139,7 @@
     }
     .kuakua .badge { background: linear-gradient(135deg,#7c6ef2,#ff8fab); }
     .voice  .badge { background: linear-gradient(135deg,#06b6d4,#3b82f6); }
+    .fortune .badge{ background: linear-gradient(135deg,#f59e0b,#ef4444); }
 
     .home-footer {
       margin-top: 28px;
@@ -230,9 +235,10 @@
     .btime { font-size: 10px; color: #c0bde0; margin-top: 3px; padding: 0 3px; }
     .msg-row.user .btime { text-align: right; }
 
-    /* 打字动画 */
     .dots { display:flex; align-items:center; gap:4px; padding:3px 0; }
     .dots span { width:7px;height:7px;background:var(--accent);border-radius:50%;animation:bonce 1.2s infinite; }
+    .dots.cyan span  { background: var(--accent3); }
+    .dots.amber span { background: #f59e0b; }
     .dots span:nth-child(2){animation-delay:.2s;}
     .dots span:nth-child(3){animation-delay:.4s;}
     @keyframes bonce{0%,80%,100%{transform:translateY(0);opacity:.5;}40%{transform:translateY(-7px);opacity:1;}}
@@ -417,6 +423,114 @@
     .done-reset:active { transform: scale(.96); }
 
     /* ═══════════════════════════════════
+       运势卡片 专属样式
+    ═══════════════════════════════════ */
+    .back-btn.amber { background: #fffbeb; color: #d97706; }
+    .topbar-avatar.amber { background: linear-gradient(135deg,#f59e0b,#ef4444); }
+    .prog-bar.amber { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+    .dots.amber span { background: #f59e0b; }
+
+    /* 运势卡片气泡（AI消息用amber色） */
+    .msg-av.amber { background: linear-gradient(135deg,#f59e0b,#ef4444); }
+
+    /* 运势底部输入区 */
+    .ft-bottom {
+      background: #fff;
+      border-top: 1px solid #fde68a;
+      padding: 12px 14px;
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+      flex-shrink: 0;
+    }
+    .ft-opts-wrap { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
+    .ft-opt-btn {
+      padding: 7px 14px;
+      border: 1.5px solid #fcd34d; border-radius: 22px;
+      background: #fffbeb; color: #d97706;
+      font-size: 13px; cursor: pointer;
+      transition: all .15s; font-family: inherit;
+      -webkit-user-select: none; user-select: none;
+    }
+    .ft-opt-btn:active, .ft-opt-btn.sel {
+      background: #f59e0b; border-color: #f59e0b; color: #fff;
+      transform: scale(.96);
+    }
+    .ft-send-btn {
+      width: 44px; height: 44px; border: none; border-radius: 13px;
+      background: linear-gradient(135deg,#f59e0b,#ef4444);
+      color: #fff; cursor: pointer; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .12s;
+    }
+    .ft-send-btn:active { transform: scale(.92); }
+    .ft-send-btn:disabled { background: #ccc; }
+    .ft-input {
+      flex: 1; border: 1.5px solid #fcd34d; border-radius: 14px;
+      padding: 11px 13px; font-size: 15px; font-family: inherit;
+      resize: none; outline: none; transition: border-color .2s;
+      color: var(--text); background: #fffdf5;
+      min-height: 44px; max-height: 100px;
+      -webkit-appearance: none;
+    }
+    .ft-input:focus { border-color: #f59e0b; }
+
+    /* 运势结果卡片 */
+    .fortune-card {
+      margin: 8px 0;
+      background: linear-gradient(145deg, #fffbeb, #fff7ed);
+      border: 1.5px solid #fcd34d;
+      border-radius: 20px;
+      padding: 20px 18px;
+      box-shadow: 0 4px 20px rgba(245,158,11,.15);
+      animation: fadeUp .4s ease both;
+    }
+    .fc-header {
+      text-align: center;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed #fcd34d;
+      margin-bottom: 14px;
+    }
+    .fc-title {
+      font-size: 13px; font-weight: 700; color: #92400e;
+      letter-spacing: 1px; margin-bottom: 6px;
+    }
+    .fc-name { font-size: 18px; font-weight: 900; color: #d97706; margin-bottom: 4px; }
+    .fc-score-wrap { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0 4px; }
+    .fc-score-num {
+      font-size: 42px; font-weight: 900;
+      background: linear-gradient(135deg,#f59e0b,#ef4444);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; line-height: 1;
+    }
+    .fc-score-unit { font-size: 14px; color: #92400e; font-weight: 700; }
+    .fc-stars { font-size: 18px; letter-spacing: 1px; }
+    .fc-keywords {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      justify-content: center; margin-top: 10px;
+    }
+    .fc-kw {
+      padding: 3px 12px; border-radius: 20px;
+      background: linear-gradient(135deg,#f59e0b,#ef4444);
+      color: #fff; font-size: 12px; font-weight: 700;
+    }
+    .fc-section { margin-bottom: 12px; }
+    .fc-section-title {
+      font-size: 12px; font-weight: 800; color: #92400e;
+      margin-bottom: 5px; display: flex; align-items: center; gap: 4px;
+    }
+    .fc-section-body {
+      font-size: 13px; line-height: 1.75; color: #44403c;
+      background: rgba(255,255,255,.7);
+      border-radius: 10px; padding: 9px 11px;
+    }
+    .fc-footer {
+      text-align: center; font-size: 11px; color: #a78bfa;
+      margin-top: 10px; font-style: italic;
+    }
+
+    .done-reset.amber { background: linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; }
+    .done-title.amber { color: #d97706; }
+
+    /* ═══════════════════════════════════
        HTTPS 提示横幅（仅 file:// 显示）
     ═══════════════════════════════════ */
     #https-banner {
@@ -466,6 +580,16 @@
       <div class="home-card-body">
         <h2>九九试音</h2>
         <p>录制声音样本，AI 生成专属「主播特质分析报告」🎵</p>
+      </div>
+      <span class="home-card-arrow">›</span>
+    </div>
+
+    <div class="home-card fortune" onclick="openPage('fortune')">
+      <span class="badge">互动</span>
+      <div class="home-card-icon">🔮</div>
+      <div class="home-card-body">
+        <h2>年度运势</h2>
+        <p>AI 生成专属运势卡片，解锁你的年度关键词与战略建议 ✨</p>
       </div>
       <span class="home-card-arrow">›</span>
     </div>
@@ -571,6 +695,46 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════
+     年度运势 页面
+══════════════════════════════════════ -->
+<div id="page-fortune" class="page">
+  <div class="topbar">
+    <button class="back-btn amber" onclick="goHome()">←</button>
+    <div class="topbar-info">
+      <h2>年度运势 · 专属卡片</h2>
+      <p><span class="online-dot"></span>在线 · 解锁你的年度运势</p>
+    </div>
+    <div class="topbar-avatar amber">🔮</div>
+  </div>
+
+  <div class="prog-wrap"><div class="prog-bar amber" id="ft-prog" style="width:0%"></div></div>
+
+  <div class="messages" id="ft-msgs"></div>
+
+  <div class="ft-bottom" id="ft-bottom">
+    <div class="step-label" id="ft-step-label">✨ 开始测运势</div>
+    <div class="ft-opts-wrap" id="ft-opts"></div>
+    <div class="input-row">
+      <textarea class="ft-input" id="ft-input" rows="1" placeholder="在这里输入你的回答…"></textarea>
+      <button class="ft-send-btn" id="ft-send">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="done-overlay" id="ft-done">
+    <div class="done-card">
+      <div class="done-emoji">🎴</div>
+      <div class="done-title amber">运势卡片已解锁！</div>
+      <div class="done-sub" id="ft-done-msg">截图留念，带着年度运势出发吧 🌟</div>
+      <button class="done-reset amber" id="ft-reset">下一位 →</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ──────────────────────────────────────────────
 //  API
@@ -656,7 +820,7 @@ function addMsg(listId, role, text, theme) {
   row.className = `msg-row ${isAI ? "ai":"user"}`;
   const av = document.createElement("div");
   av.className = `msg-av ${isAI ? theme||"purple" : "user"}`;
-  av.textContent = isAI ? (theme==="cyan"?"🎙️":"🌟") : "🙋";
+  av.textContent = isAI ? (theme==="cyan"?"🎙️": theme==="amber"?"🔮" :"🌟") : "🙋";
   const wrap   = document.createElement("div");
   const bubble = document.createElement("div");
   bubble.className = `bubble ${isAI?"ai":"user"}`;
@@ -675,11 +839,11 @@ function addTyping(listId, theme) {
   row.className = "msg-row ai"; row.id = "typing_"+listId;
   const av = document.createElement("div");
   av.className = `msg-av ${theme||"purple"}`;
-  av.textContent = theme==="cyan"?"🎙️":"🌟";
+  av.textContent = theme==="cyan"?"🎙️": theme==="amber"?"🔮" :"🌟";
   const wrap   = document.createElement("div");
   const bubble = document.createElement("div");
   bubble.className = "bubble ai";
-  bubble.innerHTML = `<div class="dots"><span></span><span></span><span></span></div>`;
+  bubble.innerHTML = `<div class="dots${theme?" "+theme:""}"><span></span><span></span><span></span></div>`;
   wrap.appendChild(bubble); row.appendChild(av); row.appendChild(wrap);
   el.appendChild(row);
   requestAnimationFrame(()=>{ el.scrollTop = el.scrollHeight; });
@@ -723,8 +887,9 @@ function openPage(name) {
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById("page-"+name).classList.add("active");
   currentPage = name;
-  if (name==="kuakua") initKK();
-  if (name==="voice")  initVC();
+  if (name==="kuakua")  initKK();
+  if (name==="voice")   initVC();
+  if (name==="fortune") initFT();
 }
 
 function goHome() {
@@ -1036,6 +1201,211 @@ document.getElementById("vc-reset").addEventListener("click", ()=>{
   vc={};
   document.getElementById("vc-done").classList.remove("show");
   initVC();
+});
+
+// ══════════════════════════════════════════════
+//  年度运势
+// ══════════════════════════════════════════════
+const FT_STEPS = [
+  { id:"name",  q:"你好！先告诉我你的名字吧（可以是昵称）🌟", type:"input", ph:"输入你的名字或昵称…" },
+  { id:"shengxiao", q:"你是什么生肖的呢？🐾", type:"opts",
+    opts:["🐭 鼠","🐮 牛","🐯 虎","🐰 兔","🐲 龙","🐍 蛇","🐴 马","🐑 羊","🐵 猴","🐔 鸡","🐶 狗","🐷 猪"] },
+  { id:"month", q:"你出生在哪个月份？🎂", type:"opts",
+    opts:["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"] },
+  { id:"keyword", q:"选一个最能代表你今年期望的关键词 💫", type:"opts",
+    opts:["🚀 突破","💰 财富","❤️ 爱情","👨‍👩‍👧 家庭","📚 成长","🏆 成就","🧘 健康","🌍 探索","🤝 人脉","✨ 创新","🎯 专注","🌈 快乐"] },
+  { id:"worry",  q:"今年你最想改变或突破的是什么？💬", type:"input", ph:"比如：想换工作、想更自律、想多陪家人…" },
+];
+
+const ZODIAC_MAP = {
+  "🐭 鼠":"1912,1924,1936,1948,1960,1972,1984,1996,2008,2020",
+  "🐮 牛":"聪慧踏实、坚韧不拔","🐯 虎":"勇敢果断、魅力十足",
+  "🐰 兔":"温柔细腻、直觉敏锐","🐲 龙":"霸气自信、领袖气质",
+  "🐍 蛇":"深邃睿智、神秘优雅","🐴 马":"活力奔放、行动力强",
+  "🐑 羊":"温和善良、艺术天赋","🐵 猴":"聪明灵活、创意无限",
+  "🐔 鸡":"勤奋认真、追求完美","🐶 狗":"忠诚可靠、正义感强",
+  "🐷 猪":"真诚宽厚、福气满满"
+};
+
+let ft = {};
+
+function initFT() {
+  if (ft._ready) return;
+  ft = { _ready:true, step:0, ans:{}, typing:false, done:false };
+  document.getElementById("ft-msgs").innerHTML = "";
+  document.getElementById("ft-bottom").style.display = "block";
+  document.getElementById("ft-done").classList.remove("show");
+  document.getElementById("ft-prog").style.width = "0%";
+  document.getElementById("ft-input").value = "";
+
+  setTimeout(()=>{
+    addMsg("ft-msgs","ai","✨ 欢迎来到「年度运势」！\n我会根据你的信息，为你生成一张专属运势卡片～\n里面有你的年度评分、关键词和战略建议！\n\n只需回答几个小问题，马上揭晓你的2025年运势 🔮","amber");
+    setTimeout(()=>ftStep(0), 1000);
+  }, 300);
+}
+
+function ftStep(i) {
+  if (i >= FT_STEPS.length) return;
+  const s = FT_STEPS[i];
+  document.getElementById("ft-step-label").textContent = `第 ${i+1} / ${FT_STEPS.length} 步`;
+  const inp = document.getElementById("ft-input");
+  inp.placeholder = s.ph || "选择或输入…";
+  inp.value = "";
+  const wrap = document.getElementById("ft-opts");
+  wrap.innerHTML = "";
+  if (s.type === "opts") {
+    s.opts.forEach(o => {
+      const b = document.createElement("button");
+      b.className = "ft-opt-btn"; b.textContent = o;
+      b.onclick = () => {
+        wrap.querySelectorAll(".ft-opt-btn").forEach(x=>x.classList.remove("sel"));
+        b.classList.add("sel");
+        inp.value = o;
+      };
+      wrap.appendChild(b);
+    });
+  }
+  setTimeout(()=>{
+    addMsg("ft-msgs","ai",s.q,"amber");
+    document.getElementById("ft-prog").style.width = Math.round(i/(FT_STEPS.length+1)*100)+"%";
+  }, 200);
+}
+
+async function ftSend() {
+  if (ft.typing || ft.done) return;
+  const v = document.getElementById("ft-input").value.trim();
+  if (!v) return;
+  const s = FT_STEPS[ft.step];
+  addMsg("ft-msgs","user",v);
+  ft.ans[s.id] = v;
+  document.getElementById("ft-input").value = "";
+  document.getElementById("ft-opts").innerHTML = "";
+  ft.step++;
+
+  if (ft.step < FT_STEPS.length) {
+    ft.typing = true; document.getElementById("ft-send").disabled = true;
+    addTyping("ft-msgs","amber");
+    await delay(700);
+    removeTyping("ft-msgs"); ft.typing = false;
+    document.getElementById("ft-send").disabled = false;
+    ftStep(ft.step);
+  } else {
+    ft.typing = true; document.getElementById("ft-send").disabled = true;
+    document.getElementById("ft-bottom").style.display = "none";
+    document.getElementById("ft-prog").style.width = "80%";
+    addTyping("ft-msgs","amber");
+    await delay(600);
+    try {
+      const sp = `你是一位温暖、有智慧的年度运势分析师，风格轻松趣味又有启发性。
+请根据用户信息生成一张「2025年度运势卡片」，严格按以下JSON格式输出，不要输出任何JSON以外的内容：
+{
+  "score": 数字(1-10的整数),
+  "keywords": ["关键词1","关键词2","关键词3"],
+  "work": "工作运势建议（50-80字，积极鼓励）",
+  "life": "生活运势建议（50-80字，温暖有画面感）",
+  "growth": "成长建议（50-80字，实用有力量）",
+  "warning": "战略提醒（40-60字，需要注意的事项或把握的机会）",
+  "lucky": "专属幸运宣言（一句话，20-30字，有力量感）"
+}
+用户信息：名字=${ft.ans.name||"朋友"} 生肖=${ft.ans.shengxiao||"未知"} 出生月份=${ft.ans.month||"未知"} 期望关键词=${ft.ans.keyword||"未知"} 想突破的事=${ft.ans.worry||"未知"}`;
+
+      const raw = await callAI(sp, "请生成我的年度运势卡片JSON");
+      removeTyping("ft-msgs");
+      document.getElementById("ft-prog").style.width = "100%";
+
+      // 解析JSON
+      let data;
+      try {
+        const jsonStr = raw.match(/\{[\s\S]*\}/)?.[0] || raw;
+        data = JSON.parse(jsonStr);
+      } catch(e) {
+        // 解析失败则直接显示文字
+        addMsg("ft-msgs","ai","🔮 你的运势已生成：\n\n"+raw,"amber");
+        ft.done = true;
+        document.getElementById("ft-done-msg").textContent = `${ft.ans.name||"朋友"}，带着这份运势大步向前吧！🌟`;
+        addFinishBtn("ft-msgs","amber",()=>{ document.getElementById("ft-done").classList.add("show"); });
+        return;
+      }
+
+      // 渲染运势卡片
+      const score = Math.min(10, Math.max(1, parseInt(data.score)||8));
+      const stars = "⭐".repeat(score) + (score<10?"☆".repeat(10-score):"");
+      const kws = Array.isArray(data.keywords) ? data.keywords : ["突破","成长","收获"];
+
+      const card = document.createElement("div");
+      card.className = "fortune-card";
+      card.innerHTML = `
+        <div class="fc-header">
+          <div class="fc-title">✦ 2025 年度运势卡片 ✦</div>
+          <div class="fc-name">${ft.ans.name||"朋友"} · ${(ft.ans.shengxiao||"").replace(/[🐭🐮🐯🐰🐲🐍🐴🐑🐵🐔🐶🐷]/g,"").trim()}</div>
+          <div class="fc-score-wrap">
+            <span class="fc-score-num">${score}</span>
+            <span class="fc-score-unit">/ 10</span>
+          </div>
+          <div class="fc-stars">${stars}</div>
+          <div class="fc-keywords">${kws.map(k=>`<span class="fc-kw">${k}</span>`).join("")}</div>
+        </div>
+        <div class="fc-section">
+          <div class="fc-section-title">💼 工作运势</div>
+          <div class="fc-section-body">${data.work||""}</div>
+        </div>
+        <div class="fc-section">
+          <div class="fc-section-title">🌸 生活运势</div>
+          <div class="fc-section-body">${data.life||""}</div>
+        </div>
+        <div class="fc-section">
+          <div class="fc-section-title">📈 成长建议</div>
+          <div class="fc-section-body">${data.growth||""}</div>
+        </div>
+        <div class="fc-section">
+          <div class="fc-section-title">⚡ 战略提醒</div>
+          <div class="fc-section-body">${data.warning||""}</div>
+        </div>
+        <div class="fc-footer">🌟 ${data.lucky||"2025，属于你的高光时刻正在路上！"}</div>
+      `;
+
+      // 把卡片插入消息区
+      const msgsEl = document.getElementById("ft-msgs");
+      const wrapRow = document.createElement("div");
+      wrapRow.className = "msg-row ai";
+      wrapRow.style.cssText = "flex-direction:column;align-items:stretch;gap:4px;";
+      const avRow = document.createElement("div");
+      avRow.style.cssText = "display:flex;align-items:center;gap:8px;margin-bottom:4px;";
+      const av = document.createElement("div");
+      av.className = "msg-av amber"; av.textContent = "🔮";
+      const lbl = document.createElement("span");
+      lbl.style.cssText = "font-size:12px;color:#92400e;font-weight:700;";
+      lbl.textContent = "你的专属运势卡片 🎴";
+      avRow.appendChild(av); avRow.appendChild(lbl);
+      wrapRow.appendChild(avRow);
+      wrapRow.appendChild(card);
+      msgsEl.appendChild(wrapRow);
+      requestAnimationFrame(()=>{ msgsEl.scrollTop = msgsEl.scrollHeight; });
+
+      ft.done = true;
+      document.getElementById("ft-done-msg").textContent = `${ft.ans.name||"朋友"}，截图留念，2025 大步向前！🌟`;
+      addFinishBtn("ft-msgs","amber",()=>{ document.getElementById("ft-done").classList.add("show"); });
+
+    } catch(e) {
+      removeTyping("ft-msgs");
+      addMsg("ft-msgs","ai",`⚠️ 运势生成遇到了小插曲，请稍后重试。\n(${e.message})`,"amber");
+      document.getElementById("ft-bottom").style.display = "block";
+      ft.typing = false; document.getElementById("ft-send").disabled = false;
+    }
+  }
+}
+
+document.getElementById("ft-send").addEventListener("click", ftSend);
+document.getElementById("ft-input").addEventListener("keydown", e=>{
+  if (e.key==="Enter" && !e.shiftKey) { e.preventDefault(); ftSend(); }
+});
+document.getElementById("ft-input").addEventListener("input", function(){
+  this.style.height="auto"; this.style.height=this.scrollHeight+"px";
+});
+document.getElementById("ft-reset").addEventListener("click", ()=>{
+  ft={};
+  document.getElementById("ft-done").classList.remove("show");
+  initFT();
 });
 </script>
 </body>
