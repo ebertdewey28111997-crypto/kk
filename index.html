@@ -577,6 +577,7 @@
 // ──────────────────────────────────────────────
 const API_KEY = "sk-api-zLtNOB1d4B5KWAKEKPXBAhOnx7Ju5D9KmQ6Tx2B0y2KcJPPaCTWki-SYJPF71WYCWqZUlCKZX4OK2KbI-wOpM76PZ7xkcdxrawn1_qUjcUcvWqQ2ifuUy3c";
 const API_URL = "https://api.minimax.chat/v1/text/chatcompletion_v2";
+const TTS_URL = "https://api.minimax.chat/v1/t2a_v2";
 const MODEL   = "MiniMax-Text-01";
 
 async function callAI(system, user) {
@@ -588,6 +589,58 @@ async function callAI(system, user) {
   if (!r.ok) { const t=await r.text(); throw new Error(`${r.status}: ${t}`); }
   const d = await r.json();
   return d.choices?.[0]?.message?.content || "";
+}
+
+// TTS：调用 MiniMax 语音合成，返回 AudioBuffer 并播放
+let kkAudio = null;
+async function speakText(text) {
+  try {
+    // 清理上一段音频
+    if (kkAudio) { try { kkAudio.pause(); } catch(e){} kkAudio = null; }
+
+    const r = await fetch(TTS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${API_KEY}` },
+      body: JSON.stringify({
+        model: "speech-01-turbo",
+        text: text,
+        stream: false,
+        voice_setting: {
+          voice_id: "female-shaonv",
+          speed: 1.0,
+          vol: 1.0,
+          pitch: 0
+        },
+        audio_setting: {
+          sample_rate: 32000,
+          bitrate: 128000,
+          format: "mp3"
+        }
+      })
+    });
+    if (!r.ok) { const t = await r.text(); throw new Error(`TTS ${r.status}: ${t}`); }
+    const data = await r.json();
+    // MiniMax TTS v2 返回 data.data.audio（hex 编码）
+    const hexStr = data?.data?.audio;
+    if (!hexStr) throw new Error("TTS 返回无音频数据");
+
+    // hex → Uint8Array → Blob → ObjectURL
+    const bytes = new Uint8Array(hexStr.match(/.{1,2}/g).map(b => parseInt(b, 16)));
+    const blob  = new Blob([bytes], { type: "audio/mpeg" });
+    const url   = URL.createObjectURL(blob);
+    kkAudio = new Audio(url);
+    kkAudio.onended = () => URL.revokeObjectURL(url);
+    kkAudio.play();
+  } catch(e) {
+    console.warn("TTS 失败，降级为浏览器朗读:", e.message);
+    // 降级：Web Speech API
+    if (window.speechSynthesis) {
+      const utt = new SpeechSynthesisUtterance(text);
+      utt.lang = "zh-CN"; utt.rate = 0.95; utt.pitch = 1.1;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utt);
+    }
+  }
 }
 
 // ──────────────────────────────────────────────
@@ -649,6 +702,8 @@ function openPage(name) {
 
 function goHome() {
   if (currentPage==="voice") vcCleanup();
+  if (kkAudio) { try { kkAudio.pause(); } catch(e){} kkAudio = null; }
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById("home-screen").style.display = "flex";
   currentPage = null;
@@ -748,6 +803,9 @@ async function kkSend() {
       removeTyping("kk-msgs");
       document.getElementById("kk-prog").style.width = "100%";
       addMsg("kk-msgs","ai",rep);
+      // 语音播报
+      addMsg("kk-msgs","ai","🔊 正在为你朗读夸夸内容，请戴上耳机或打开外放～");
+      speakText(rep);
       setTimeout(()=>{
         kk.done = true;
         document.getElementById("kk-done-msg").textContent = `${kk.ans.name||"小可爱"}，希望这份夸夸能陪伴你整整一天！带着被爱的感觉出发吧 🌈`;
@@ -770,6 +828,8 @@ document.getElementById("kk-input").addEventListener("input", function(){
   this.style.height="auto"; this.style.height=this.scrollHeight+"px";
 });
 document.getElementById("kk-reset").addEventListener("click", ()=>{
+  if (kkAudio) { try { kkAudio.pause(); } catch(e){} kkAudio = null; }
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
   kk={};
   document.getElementById("kk-done").classList.remove("show");
   initKK();
