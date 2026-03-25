@@ -265,6 +265,52 @@
       background: var(--accent); border-color: var(--accent); color: #fff;
       transform: scale(.96);
     }
+
+    /* 星座 / 心情 卡片模式 */
+    .opts-wrap.cards-mode { gap: 8px; margin-bottom: 10px; }
+
+    .opt-card {
+      border: 1.5px solid #ddd8ff;
+      border-radius: 16px;
+      background: #f8f6ff;
+      cursor: pointer;
+      transition: all .14s;
+      font-family: inherit;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      -webkit-user-select: none; user-select: none;
+      gap: 3px;
+    }
+    .opt-card:active { transform: scale(.92); background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* 星座卡片：4列，显示符号+日期 */
+    .zodiac-card {
+      width: calc(25% - 6px);
+      padding: 8px 4px 7px;
+      min-width: 0;
+    }
+    .zodiac-card .oc-label {
+      font-size: 13px; font-weight: 700; color: var(--accent);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: center;
+    }
+    .zodiac-card .oc-sub {
+      font-size: 10px; color: var(--subtext); white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: center;
+    }
+    .zodiac-card:active .oc-label,
+    .zodiac-card:active .oc-sub { color: #fff; }
+
+    /* 心情卡片：5列，大emoji+小文字 */
+    .mood-card {
+      width: calc(20% - 7px);
+      padding: 10px 4px 8px;
+      min-width: 0;
+    }
+    .mood-card .oc-emoji { font-size: 26px; line-height: 1; }
+    .mood-card .oc-sub {
+      font-size: 10px; color: var(--subtext);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: center;
+    }
+    .mood-card:active .oc-sub { color: #fff; }
     .input-row { display: flex; gap: 8px; align-items: flex-end; }
     .chat-input {
       flex: 1; border: 1.5px solid #ddd8ff; border-radius: 14px;
@@ -618,7 +664,7 @@
   <div class="kk-bottom" id="kk-bottom">
     <div class="step-label" id="kk-step-label">👋 开始聊天</div>
     <div class="opts-wrap" id="kk-opts"></div>
-    <div class="input-row">
+    <div class="input-row" id="kk-input-row">
       <textarea class="chat-input" id="kk-input" rows="1" placeholder="在这里输入你的回答…"></textarea>
       <button class="send-btn" id="kk-send">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -912,11 +958,24 @@ if (location.protocol === "file:") {
 //  夸夸AI
 // ══════════════════════════════════════════════
 const KK_STEPS = [
-  { id:"name",   q:"嗨～先告诉我，你叫什么名字呀？✨", type:"input", ph:"输入你的名字…" },
-  { id:"zodiac", q:"哇，真是个好名字！你是什么星座的呢？🌙", type:"opts",
-    opts:["♈ 白羊","♉ 金牛","♊ 双子","♋ 巨蟹","♌ 狮子","♍ 处女","♎ 天秤","♏ 天蝎","♐ 射手","♑ 摩羯","♒ 水瓶","♓ 双鱼"], ph:"或直接输入…" },
-  { id:"mood",   q:"现在的心情怎么样？选一个最接近的感受吧 💭", type:"opts",
-    opts:["😊 开心愉快","😌 平静放松","😤 有点烦躁","😔 有些低落","😰 焦虑紧张","😴 好累好困","🥰 甜蜜幸福","🤩 超级兴奋","😐 有点无聊","🥺 需要安慰"], ph:"或用自己的话说…" },
+  { id:"name",   q:"宝～先告诉我，你叫什么名字呀？✨", type:"input", ph:"输入你的名字…" },
+  { id:"zodiac", q:"哇，真是个好名字！你是什么星座的呢？🌙", type:"cards",
+    opts:[
+      { label:"♈ 白羊", sub:"3/21–4/19" }, { label:"♉ 金牛", sub:"4/20–5/20" },
+      { label:"♊ 双子", sub:"5/21–6/21" }, { label:"♋ 巨蟹", sub:"6/22–7/22" },
+      { label:"♌ 狮子", sub:"7/23–8/22" }, { label:"♍ 处女", sub:"8/23–9/22" },
+      { label:"♎ 天秤", sub:"9/23–10/23" },{ label:"♏ 天蝎", sub:"10/24–11/22" },
+      { label:"♐ 射手", sub:"11/23–12/21" },{ label:"♑ 摩羯", sub:"12/22–1/19" },
+      { label:"♒ 水瓶", sub:"1/20–2/18" }, { label:"♓ 双鱼", sub:"2/19–3/20" },
+    ]},
+  { id:"mood",   q:"现在的心情怎么样？选一个最接近的感受吧 💭", type:"cards",
+    opts:[
+      { label:"😊", sub:"开心愉快" }, { label:"😌", sub:"平静放松" },
+      { label:"😤", sub:"有点烦躁" }, { label:"😔", sub:"有些低落" },
+      { label:"😰", sub:"焦虑紧张" }, { label:"😴", sub:"好累好困" },
+      { label:"🥰", sub:"甜蜜幸福" }, { label:"🤩", sub:"超级兴奋" },
+      { label:"😐", sub:"有点无聊" }, { label:"🥺", sub:"需要安慰" },
+    ]},
   { id:"share",  q:"谢谢你告诉我这些！有没有什么想分享的，或者今天有什么印象深刻的事呀？💬", type:"input", ph:"随便写点什么都行～" },
 ];
 
@@ -927,9 +986,12 @@ function initKK() {
   kk = { _ready:true, step:0, ans:{}, typing:false, done:false };
   document.getElementById("kk-msgs").innerHTML = "";
   document.getElementById("kk-bottom").style.display = "block";
+  document.getElementById("kk-input-row").style.display = "flex";
   document.getElementById("kk-done").classList.remove("show");
   document.getElementById("kk-prog").style.width = "0%";
   document.getElementById("kk-input").value = "";
+  document.getElementById("kk-opts").className = "opts-wrap";
+  document.getElementById("kk-opts").innerHTML = "";
 
   setTimeout(()=>{
     addMsg("kk-msgs","ai","嗨嗨～欢迎来到夸夸世界！🌟\n我是你今天的专属鼓励师，问你几个小问题，然后给你量身定制的超强夸赞！\n准备好被疯狂夸赞了吗？来吧！✨");
@@ -941,25 +1003,53 @@ function kkStep(i) {
   if (i >= KK_STEPS.length) return;
   const s = KK_STEPS[i];
   document.getElementById("kk-step-label").textContent = `第 ${i+1} / ${KK_STEPS.length} 步`;
-  document.getElementById("kk-input").placeholder = s.ph;
+  document.getElementById("kk-input").placeholder = s.ph || "在这里输入你的回答…";
   document.getElementById("kk-input").value = "";
   const wrap = document.getElementById("kk-opts");
   wrap.innerHTML = "";
-  if (s.type === "opts") {
+  const inputRow = document.getElementById("kk-input-row");
+
+  if (s.type === "cards") {
+    // 卡片网格模式：隐藏文字输入行，选中即发送
+    inputRow.style.display = "none";
+    wrap.className = "opts-wrap cards-mode";
+    const isMood = (s.id === "mood");
     s.opts.forEach(o => {
       const b = document.createElement("button");
-      b.className = "opt-btn"; b.textContent = o;
+      b.className = isMood ? "opt-card mood-card" : "opt-card zodiac-card";
+      b.innerHTML = isMood
+        ? `<span class="oc-emoji">${o.label}</span><span class="oc-sub">${o.sub}</span>`
+        : `<span class="oc-label">${o.label}</span><span class="oc-sub">${o.sub}</span>`;
       b.onclick = () => {
-        wrap.querySelectorAll(".opt-btn").forEach(x=>x.classList.remove("sel"));
-        b.classList.add("sel");
-        document.getElementById("kk-input").value = o;
+        if (kk.typing || kk.done) return;
+        document.getElementById("kk-input").value = o.label + " " + o.sub;
+        kkSend();
       };
       wrap.appendChild(b);
     });
+  } else {
+    // 普通文字输入模式
+    inputRow.style.display = "flex";
+    wrap.className = "opts-wrap";
+    if (s.type === "opts" && s.opts) {
+      s.opts.forEach(o => {
+        const b = document.createElement("button");
+        b.className = "opt-btn"; b.textContent = o;
+        b.onclick = () => {
+          wrap.querySelectorAll(".opt-btn").forEach(x=>x.classList.remove("sel"));
+          b.classList.add("sel");
+          document.getElementById("kk-input").value = o;
+        };
+        wrap.appendChild(b);
+      });
+    }
   }
   setTimeout(()=>{
     addMsg("kk-msgs","ai",s.q);
     document.getElementById("kk-prog").style.width = Math.round(i/(KK_STEPS.length+1)*100)+"%";
+    // 自动滚动到底部
+    const msgs = document.getElementById("kk-msgs");
+    requestAnimationFrame(()=>{ msgs.scrollTop = msgs.scrollHeight; });
   },200);
 }
 
