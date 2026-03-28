@@ -7,27 +7,21 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- 宋体 + 黑体双字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
-    <!-- 背景粒子层 -->
     <div id="particles-container"></div>
 
-    <!-- 顶部星尘闪烁层 -->
     <div id="stardust-container"></div>
 
-    <!-- 音符漂浮层 -->
     <div id="notes-container"></div>
 
-    <!-- 爆发遮罩（Loading→结果页过渡用） -->
     <div class="energy-burst" id="energy-burst"></div>
 
     <div class="app-container">
 
-        <!-- ══ 屏幕一：欢迎页 ══════════════════════════ -->
         <section id="welcome-screen" class="screen active">
             <div class="content-wrapper text-center">
                 <div class="illustration">
@@ -43,10 +37,8 @@
             <p class="footer-disclaimer">仅供娱乐 · AI 生成内容</p>
         </section>
 
-        <!-- ══ 屏幕二：输入昵称 ═══════════════════════ -->
         <section id="name-screen" class="screen">
             <div class="content-wrapper text-center">
-                <!-- 打字机效果由 JS 注入文字 -->
                 <h2 class="section-title" id="name-prompt"></h2>
                 <div class="input-group">
                     <input type="text" id="nickname-input"
@@ -57,63 +49,29 @@
             </div>
         </section>
 
-        <!-- ══ 屏幕三：故事第一幕 + 第一次抉择 ════════ -->
         <section id="story-1-screen" class="screen">
-            <div class="content-wrapper">
-                <div class="story-layout">
-                    <img id="story-1-mascot" class="mascot-img-story" src="" alt="吉祥物">
-                    <div class="story-card">
-                        <p id="story-1-text" class="story-text"></p>
-                    </div>
+            <div class="content-wrapper chat-wrapper">
                 </div>
-                <p class="options-guide" id="story-1-guide"></p>
-                <div id="story-1-options" class="options-container">
-                    <!-- 由 JS 动态注入 option-btn -->
-                </div>
-            </div>
         </section>
 
-        <!-- ══ 屏幕四：故事第二幕 + 第二次抉择 ════════ -->
-        <section id="story-2-screen" class="screen">
-            <div class="content-wrapper">
-                <div class="story-layout">
-                    <img id="story-2-mascot" class="mascot-img-story" src="" alt="吉祥物">
-                    <div class="story-card">
-                        <p id="story-2-text" class="story-text"></p>
-                    </div>
-                </div>
-                <p class="options-guide" id="story-2-guide"></p>
-                <div id="story-2-options" class="options-container">
-                    <!-- 由 JS 动态注入 option-btn -->
-                </div>
-            </div>
-        </section>
-
-        <!-- ══ 屏幕五：AI 生成过渡动画 ═══════════════ -->
         <section id="loading-screen" class="screen">
             <div class="loading-wrapper text-center">
-                <!-- 能量球 -->
                 <div class="energy-ball-container" id="energy-ball-container">
-                    <!-- 聚合光点由 JS 注入 .energy-dot -->
                     <div class="energy-core" id="energy-core"></div>
                 </div>
                 <p class="loading-text">正在发现你的闪光点……</p>
             </div>
         </section>
 
-        <!-- ══ 屏幕六：结果展示页 ═════════════════════ -->
         <section id="result-screen" class="screen">
             <div class="content-wrapper">
                 <div class="result-card" id="result-card">
                     <img id="result-mascot" class="mascot-result-img" src="" alt="吉祥物祝贺">
 
-                    <!-- 标题：昵称 + 关键词，关键词红色由 JS 注入 span -->
                     <h2 class="result-title" id="result-title"></h2>
 
-                    <!-- 装饰分割线，JS 添加 .expanded 触发延伸动画 -->
                     <span class="result-divider" id="result-divider"></span>
 
-                    <!-- 正文打字机输出区 -->
                     <div class="result-content" id="result-content"></div>
 
                     <div class="result-footer">
@@ -125,12 +83,20 @@
                             <p class="disclaimer">仅供娱乐 · AI 生成内容</p>
                         </div>
                     </div>
+
+                    <div class="result-reset-area">
+                        <div class="reset-progress-wrap">
+                            <div class="reset-progress-bar" id="reset-progress-bar"></div>
+                        </div>
+                        <button class="reset-btn" onclick="app.manualReset()">
+                            再来一次 ↺
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
 
-    </div><!-- /.app-container -->
-
+    </div><script src="stories-data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
